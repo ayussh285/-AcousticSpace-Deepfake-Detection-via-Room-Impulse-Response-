@@ -1,5 +1,6 @@
 from fastapi import APIRouter, UploadFile, File
-from app.services.audio_service import save_audio
+from backend.app.services.audio_service import save_audio
+from backend.app.schemas.response import APIResponse
 
 router = APIRouter(
     prefix="/upload",
@@ -9,10 +10,9 @@ router = APIRouter(
 @router.post("/")
 def audio_process(file: UploadFile = File(...)):
     filename = save_audio(file)
-    return {
-        "success": True,
-        "message": "Uploaded Successfully",
-        "data": {
-            "path": filename  
-        }  
-    }
+    
+    return APIResponse(
+        success=True,
+        message="Uploaded Successfully",
+        data={"path": str(filename)}
+    )

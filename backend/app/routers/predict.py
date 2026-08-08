@@ -1,17 +1,18 @@
 from fastapi import APIRouter, UploadFile, File
-from app.services.prediction_service import predict_audio
+from backend.app.services.prediction_service import predict_audio
+from backend.app.schemas.response import APIResponse
 
 router = APIRouter (
     prefix= "/predict",
     tags= ["Prediction"]
 )
 
-@router.post("/")
+@router.post("/", response_model= APIResponse)
 def predict(file : UploadFile = File(...)):
     result = predict_audio(file)
-    return {
-        "success": True,
-        "message": "Prediction Completed",
-        "data": result
-    }
+    return APIResponse(
+        success=True,
+        message="Prediction Completed",
+        data=result
+)
         
