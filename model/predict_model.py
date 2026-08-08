@@ -24,11 +24,15 @@ def predict(audio_path):
     )
     audio = preprocess_audio(audio)
     feature_vector = create_feature_vector(audio)
+    print(feature_vector.shape)
 
     feature_vector = feature_vector.reshape(1, -1)
     prediction = MODEL.predict(feature_vector)
     probabilities = MODEL.predict_proba(feature_vector)
+    print(MODEL.classes_)
     confidence = probabilities[0][prediction[0]]
+    print("Prediction:", prediction)
+    print("Probabilities:", probabilities)
 
     confidence_percent = round(confidence * 100, 2)
 
