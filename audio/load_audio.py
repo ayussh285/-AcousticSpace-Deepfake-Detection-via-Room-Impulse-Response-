@@ -1,7 +1,7 @@
 import librosa
 from pathlib import Path
 
-def load_audio(filepath):
+def load_audio(filepath : str | Path):
     audio_data , sampling_rate = librosa.load(filepath, sr = 16000)
     duration = librosa.get_duration(y=audio_data, sr= sampling_rate)
 
@@ -12,5 +12,3 @@ def load_audio(filepath):
         "sampling_rate": sampling_rate,
         "total_samples": audio_data.size,
     }
-
-# print(load_audio(r"D:\code\Projects\AcousticAI- Deepfake Audio Recognition System\10. Complete Syllabus Of Computer Graphics @GateSmashers .mp3"))
