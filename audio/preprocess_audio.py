@@ -1,8 +1,6 @@
-from load_audio import load_audio
 import numpy as np
 import librosa
 import noisereduce as nr
-
 
 def audio_normalization(audio):
     raw_signal = audio["audio_signal"]
@@ -15,7 +13,7 @@ def audio_normalization(audio):
     audio["normalized_signal"]= normalized_signal
     return audio
 
-def trimming_signal(audio):
+def trim_signal(audio):
     trimmed_audio, _ = librosa.effects.trim(audio["normalized_signal"], top_db=60)
 
     audio["trimmed_signal"]= trimmed_audio
@@ -78,7 +76,7 @@ def extract_rms(audio):
 
 def preprocess_audio(audio):
     audio = audio_normalization(audio)
-    audio = trimming_signal(audio)
+    audio = trim_signal(audio)
     audio = remove_noise(audio)
     audio = extract_mfcc(audio)
     audio = extract_mel_spectrogram(audio)
