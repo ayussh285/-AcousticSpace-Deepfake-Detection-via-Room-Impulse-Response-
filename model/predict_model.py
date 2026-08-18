@@ -56,7 +56,7 @@ def predict(audio_path):
 
 if __name__ == "__main__":
     result = predict(
-        "dataset/real/Audio1.wav"   # use one of your actual files
+        "dataset/real/Audio3.wav"   
     )
 
     print(result)

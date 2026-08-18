@@ -1,28 +1,48 @@
 import streamlit as st
 
 
-# ----------------------------
-# Header
-# ----------------------------
-
 def show_header(title, subtitle):
-
-    st.markdown(
+    st.html(
         f"""
-        <div class="main-title">{title}</div>
-        <div class="sub-title">{subtitle}</div>
-        """,
-        unsafe_allow_html=True,
+        <div style="text-align:center;">
+            <div class="brand-badge">AI AUDIO FORENSICS</div>
+
+            <div class="main-title">
+                {title}
+            </div>
+
+            <div class="sub-title">
+                {subtitle}
+            </div>
+        </div>
+        """
     )
 
 
-# ----------------------------
-# Prediction Card
-# ----------------------------
+def show_upload_header():
+    st.html(
+        """
+        <div class="section-title">
+            Upload Audio
+        </div>
+
+        <div class="section-description">
+            Upload a WAV, MP3, or FLAC file for deepfake analysis.
+        </div>
+        """
+    )
+
 
 def show_prediction(result):
 
-    prediction = result["prediction"]
+    prediction = result.get("prediction", "Unknown")
+    confidence = float(result.get("confidence", 0))
+    confidence_level = result.get(
+        "confidence_level",
+        "Unknown"
+    )
+
+    confidence_percent = confidence * 100
 
     if prediction == "Real":
         card_class = "real-card"
@@ -31,97 +51,204 @@ def show_prediction(result):
         card_class = "fake-card"
         icon = "🔴"
 
-    st.markdown(
+    st.html(
         f"""
         <div class="{card_class}">
-            <h2>{icon} {prediction}</h2>
-            <h4>Confidence : {result["confidence"]*100:.2f}%</h4>
-            <p>{result["confidence_level"]}</p>
+
+            <div class="prediction-label">
+                MODEL CLASSIFICATION
+            </div>
+
+            <div class="prediction-value">
+                {icon} {prediction.upper()}
+            </div>
+
+            <div class="prediction-confidence">
+                Confidence:
+                <strong>{confidence_percent:.2f}%</strong>
+            </div>
+
+            <div class="confidence-level">
+                Confidence Level: {confidence_level}
+            </div>
+
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
-# ----------------------------
-# Confidence Bar
-# ----------------------------
-
 def show_confidence(result):
 
-    st.markdown("### Confidence")
+    confidence = float(
+        result.get("confidence", 0)
+    )
 
-    st.progress(float(result["confidence"]))
+    st.html(
+        """
+        <div style="margin-top:22px;">
 
-    st.write(f"**{result['confidence']*100:.2f}%**")
+            <div class="section-title">
+                Confidence Score
+            </div>
 
+            <div class="section-description">
+                Model confidence for the predicted class.
+            </div>
 
-# ----------------------------
-# Audio Information
-# ----------------------------
+        </div>
+        """
+    )
+
+    st.progress(
+        min(max(confidence, 0.0), 1.0)
+    )
+
+    st.html(
+        f"""
+        <div style="
+            text-align:right;
+            color:#cbd5e1;
+            font-size:14px;
+            font-weight:700;
+            margin-top:-4px;
+        ">
+            {confidence * 100:.2f}%
+        </div>
+        """
+    )
+
 
 def show_audio_information(uploaded_file, result):
 
-    st.markdown("### Audio Information")
+    filename = uploaded_file.name
 
-    col1, col2 = st.columns(2)
+    duration = float(
+        result.get("duration", 0)
+    )
+
+    sampling_rate = result.get(
+        "sampling_rate",
+        "N/A"
+    )
+
+    model = result.get(
+        "model",
+        "N/A"
+    )
+
+    st.html(
+        """
+        <div style="margin-top:28px;">
+            <div class="section-title">
+                Audio Information
+            </div>
+        </div>
+        """
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-
-        st.markdown(
+        st.html(
             f"""
-            <div class="card">
-            <div class="metric-title">File Name</div>
-            <div class="metric-value">{uploaded_file.name}</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+            <div class="metric-card">
 
-        st.markdown(
-            f"""
-            <div class="card">
-            <div class="metric-title">Duration</div>
-            <div class="metric-value">{result["duration"]:.2f} sec</div>
+                <div class="metric-title">
+                    FILE NAME
+                </div>
+
+                <div class="metric-value">
+                    {filename}
+                </div>
+
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
     with col2:
-
-        st.markdown(
+        st.html(
             f"""
-            <div class="card">
-            <div class="metric-title">Sampling Rate</div>
-            <div class="metric-value">{result["sampling_rate"]} Hz</div>
+            <div class="metric-card">
+
+                <div class="metric-title">
+                    DURATION
+                </div>
+
+                <div class="metric-value">
+                    {duration:.2f} sec
+                </div>
+
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
-        st.markdown(
+    with col3:
+        st.html(
             f"""
-            <div class="card">
-            <div class="metric-title">Model</div>
-            <div class="metric-value">{result["model"]}</div>
+            <div class="metric-card">
+
+                <div class="metric-title">
+                    SAMPLING RATE
+                </div>
+
+                <div class="metric-value">
+                    {sampling_rate} Hz
+                </div>
+
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
+        )
+
+    with col4:
+        st.html(
+            f"""
+            <div class="metric-card">
+
+                <div class="metric-title">
+                    MODEL
+                </div>
+
+                <div class="metric-value">
+                    {model}
+                </div>
+
+            </div>
+            """
         )
 
 
-# ----------------------------
-# Footer
-# ----------------------------
+def show_disclaimer():
+
+    st.html(
+        """
+        <div class="info-box">
+
+            <strong>About this result</strong>
+
+            <br><br>
+
+            The classification is generated by the trained
+            Random Forest model using acoustic features extracted
+            from the uploaded audio.
+
+            <br><br>
+
+            The confidence score represents the model's confidence
+            in its predicted class and should not be interpreted as
+            absolute proof that an audio recording is synthetic or genuine.
+
+        </div>
+        """
+    )
+
 
 def show_footer():
 
-    st.markdown(
+    st.html(
         """
         <div class="footer">
-        AcousticAI © 2026 | Deepfake Audio Detection using Machine Learning
+            AcousticAI © 2026 &nbsp;•&nbsp;
+            Deepfake Audio Detection using Machine Learning
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
