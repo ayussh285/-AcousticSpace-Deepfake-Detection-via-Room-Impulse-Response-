@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+python-multipart
+
+numpy
+pandas
+scikit-learn
+joblib
+
+librosa
+soundfile
+matplotlib
+
+streamlit
+requests
